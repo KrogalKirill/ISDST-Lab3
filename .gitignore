@@ -1,0 +1,19 @@
+# IntelliJ
+.idea/
+*.iml
+*.iws
+out/
+
+# Gradle
+build/
+.gradle/
+gradlew
+gradlew.bat
+gradle/
+
+# Локальные файлы
+*.log
+.DS_Store
+
+# Конфигурация приложения
+app.properties
