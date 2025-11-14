@@ -1,0 +1,65 @@
+plugins {
+    id 'java'
+    id 'application'           // Добавляем, чтобы можно было запускать main-класс
+}
+
+group = 'com.analyzer'
+version = '1.0.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+application {
+    mainClass = 'com.analyzer.App'  // Указываем точку входа
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Jackson для JSON
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+
+    // JUnit 5
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+// Создание "fat JAR" (с зависимостями)
+jar {
+    manifest {
+        attributes 'Main-Class': application.mainClass
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    archiveFileName = "${project.name}-${project.version}.jar"
+}
+
+// Удобные задачи
+tasks.register('runApp') {
+    group = 'application'
+    description = 'Запускает приложение'
+    dependsOn 'classes'
+    doLast {
+        javaexec {
+            mainClass = application.mainClass
+            classpath = sourceSets.main.runtimeClasspath
+            // Передаём app.properties, если есть
+            if (file('app.properties').exists()) {
+                systemProperty 'app.config', 'app.properties'
+            }
+        }
+    }
+}
