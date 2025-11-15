@@ -1,8 +1,11 @@
 {
   "top_authors" : [ {
     "name" : "Kirill",
-    "commits" : 7
+    "commits" : 8
   } ],
-  "found_keywords" : [ ],
+  "found_keywords" : [ {
+    "hash" : "e711cbd",
+    "message" : "HOTFIX текст для коммита"
+  } ],
   "all_authors" : [ "Kirill" ]
 }

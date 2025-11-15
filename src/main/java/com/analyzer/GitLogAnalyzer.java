@@ -19,6 +19,11 @@ public class GitLogAnalyzer {
     private final String outputFormat;
     private final String outputFile;
 
+    public String comm()
+    {
+        return commits.get(6).toString();
+    }
+
     public GitLogAnalyzer(String gitLogOutput, Properties properties) {
         this.commits = parseGitLog(gitLogOutput);
         this.keywords = Arrays.stream(properties.getProperty("git.search.keywords", "")
@@ -51,9 +56,21 @@ public class GitLogAnalyzer {
     }
 
     public List<Commit> findCommitsWithKeywords() {
+        if (keywords.isEmpty()) return Collections.emptyList();
+
         return commits.stream()
-                .filter(c -> keywords.stream()
-                        .anyMatch(kw -> c.getMessage().toUpperCase().contains(kw.toUpperCase())))
+                .filter(c -> {
+                    String msg = c.getMessage().toUpperCase();
+                    return keywords.stream()
+                            .map(String::toUpperCase)
+                            .anyMatch(kw -> {
+                                String clean = kw.trim();
+                                if (clean.endsWith(":")) {
+                                    clean = clean.substring(0, clean.length() - 1).trim();
+                                }
+                                return msg.contains(clean);
+                            });
+                })
                 .collect(Collectors.toList());
     }
 
@@ -113,7 +130,7 @@ public class GitLogAnalyzer {
         System.out.println("КОММИТЫ С КЛЮЧЕВЫМИ СЛОВАМИ:");
         List<Commit> found = findCommitsWithKeywords();
         if (found.isEmpty()) {
-            System.out.println("  Не найдено.");
+            System.out.println(" Не найдено.");
         } else {
             found.forEach(c -> System.out.printf("  [%s] %s%n", c.getHash().substring(0, 7), c.getMessage()));
         }
