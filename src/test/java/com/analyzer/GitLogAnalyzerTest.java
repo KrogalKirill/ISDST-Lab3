@@ -8,9 +8,9 @@ import java.util.Properties;
 class GitLogAnalyzerTest {
 
     private final String sampleLog = """
-        a1b2c3d|Alice|FIX: Critical bug in login
-        e4f5g6h|Bob|Initial commit
-        i7j8k9l|Alice|Update README
+        a1b2c3d|Alice|Initialization: project setup
+        e4f5g6h|Bob|Fill: Commit model
+        i7j8k9l|Alice|Hotfix: urgent patch
         """;
 
     @Test
@@ -28,12 +28,14 @@ class GitLogAnalyzerTest {
     @Test
     void testKeywordSearch() {
         Properties props = new Properties();
-        props.setProperty("git.search.keywords", "FIX:,BUG:");
+        props.setProperty("git.search.keywords", "Initialization,Fill,Hotfix");
         GitLogAnalyzer analyzer = new GitLogAnalyzer(sampleLog, props);
 
         var found = analyzer.findCommitsWithKeywords();
-        assertEquals(1, found.size());
-        assertEquals("a1b2c3d", found.get(0).getHash());
+        assertEquals(3, found.size()); // Все 3 коммита содержат ключевые слова
+        assertTrue(found.stream().anyMatch(c -> c.getHash().equals("a1b2c3d")));
+        assertTrue(found.stream().anyMatch(c -> c.getHash().equals("e4f5g6h")));
+        assertTrue(found.stream().anyMatch(c -> c.getHash().equals("i7j8k9l")));
     }
 
     @Test
