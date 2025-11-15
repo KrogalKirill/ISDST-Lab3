@@ -1,11 +1,29 @@
 {
   "top_authors" : [ {
     "name" : "Kirill",
-    "commits" : 8
+    "commits" : 9
   } ],
   "found_keywords" : [ {
-    "hash" : "e711cbd",
+    "hash" : "f58f0ed",
+    "message" : "Hotfix"
+  }, {
+    "hash" : "e42e0b6",
     "message" : "HOTFIX текст для коммита"
+  }, {
+    "hash" : "a64208c",
+    "message" : "Fill: файл GitLogAnalyzerTest.java"
+  }, {
+    "hash" : "f2e72df",
+    "message" : "Fill: файл App.java"
+  }, {
+    "hash" : "720ad2a",
+    "message" : "Fill: файл GitLogAnalyzer.java"
+  }, {
+    "hash" : "1048c25",
+    "message" : "Fill: файл Commit.java"
+  }, {
+    "hash" : "7eb3a22",
+    "message" : "Initialization: README.md, CHANGELOG.md, привязка локального репозитория к удаленному"
   } ],
   "all_authors" : [ "Kirill" ]
 }
