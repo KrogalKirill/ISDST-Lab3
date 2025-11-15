@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,29 +12,13 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * Анализатор логов Git.
- * <p>
- * Выполняет три задачи:
- * <ol>
- *   <li>Топ-3 авторов по количеству коммитов</li>
- *   <li>Поиск коммитов по ключевым словам из app.properties</li>
- *   <li>Список всех уникальных авторов в алфавитном порядке</li>
- * </ol>
- * </p>
- */
 public class GitLogAnalyzer {
 
     private final List<Commit> commits;
     private final List<String> keywords;
     private final String outputFormat;
+    private final String outputFile;
 
-    /**
-     * Создает анализатор.
-     *
-     * @param gitLogOutput вывод команды {@code git log --pretty=format:"%h|%an|%s"}
-     * @param properties   свойства из app.properties
-     */
     public GitLogAnalyzer(String gitLogOutput, Properties properties) {
         this.commits = parseGitLog(gitLogOutput);
         this.keywords = Arrays.stream(properties.getProperty("git.search.keywords", "")
@@ -43,12 +26,10 @@ public class GitLogAnalyzer {
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
                 .collect(Collectors.toList());
-        this.outputFormat = properties.getProperty("output.format", "JSON").toUpperCase();
+        this.outputFormat = properties.getProperty("output.format", "JSON").trim().toUpperCase();
+        this.outputFile = properties.getProperty("output.file", "git-report.json").trim();
     }
 
-    /**
-     * Парсит вывод git log в список коммитов.
-     */
     private List<Commit> parseGitLog(String output) {
         return output.lines()
                 .map(line -> {
@@ -60,9 +41,6 @@ public class GitLogAnalyzer {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Задание 1: Топ-3 авторов.
-     */
     public List<Map.Entry<String, Long>> getTopAuthors(int limit) {
         return commits.stream()
                 .collect(Collectors.groupingBy(Commit::getAuthor, Collectors.counting()))
@@ -72,18 +50,13 @@ public class GitLogAnalyzer {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Задание 2: Поиск по ключевым словам.
-     */
     public List<Commit> findCommitsWithKeywords() {
         return commits.stream()
-                .filter(c -> keywords.stream().anyMatch(kw -> c.getMessage().toUpperCase().contains(kw.toUpperCase())))
+                .filter(c -> keywords.stream()
+                        .anyMatch(kw -> c.getMessage().toUpperCase().contains(kw.toUpperCase())))
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Задание 3: Уникальные авторы в алфавитном порядке.
-     */
     public List<String> getAllAuthorsSorted() {
         return commits.stream()
                 .map(Commit::getAuthor)
@@ -92,14 +65,10 @@ public class GitLogAnalyzer {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Формирует JSON-отчет.
-     */
-    public String generateJsonReport() throws Exception {
+    private String generateJsonReport() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode root = mapper.createObjectNode();
 
-        // Top authors
         ArrayNode topAuthors = mapper.createArrayNode();
         getTopAuthors(3).forEach(entry -> {
             ObjectNode node = mapper.createObjectNode();
@@ -109,7 +78,6 @@ public class GitLogAnalyzer {
         });
         root.set("top_authors", topAuthors);
 
-        // Found keywords
         ArrayNode found = mapper.createArrayNode();
         findCommitsWithKeywords().forEach(c -> {
             ObjectNode node = mapper.createObjectNode();
@@ -126,26 +94,55 @@ public class GitLogAnalyzer {
         return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(root);
     }
 
-    /**
-     * Запускает анализ и выводит результат.
-     * <p>
-     * Результат:
-     * <ul>
-     *   <li>Выводится в консоль (stdout)</li>
-     *   <li>Сохраняется в файл {@code git-report.json} в корне проекта</li>
-     * </ul>
-     * </p>
-     */
+    private void printPlainTextReport() {
+        System.out.println("=== АНАЛИЗ GIT ЛОГА ===");
+        System.out.println();
+
+        System.out.println("ТОП-3 АВТОРОВ:");
+        List<Map.Entry<String, Long>> top = getTopAuthors(3);
+        if (top.isEmpty()) {
+            System.out.println("  Нет коммитов.");
+        } else {
+            for (int i = 0; i < top.size(); i++) {
+                var e = top.get(i);
+                System.out.printf("  %d. %s — %d коммит(ов)%n", i + 1, e.getKey(), e.getValue());
+            }
+        }
+        System.out.println();
+
+        System.out.println("КОММИТЫ С КЛЮЧЕВЫМИ СЛОВАМИ:");
+        List<Commit> found = findCommitsWithKeywords();
+        if (found.isEmpty()) {
+            System.out.println("  Не найдено.");
+        } else {
+            found.forEach(c -> System.out.printf("  [%s] %s%n", c.getHash().substring(0, 7), c.getMessage()));
+        }
+        System.out.println();
+
+        System.out.println("ВСЕ АВТОРЫ (по алфавиту):");
+        List<String> authors = getAllAuthorsSorted();
+        if (authors.isEmpty()) {
+            System.out.println("  Нет авторов.");
+        } else {
+            authors.forEach(a -> System.out.println("  • " + a));
+        }
+    }
+
     public void run() throws Exception {
-        String json = generateJsonReport();
+        if ("PLAINTEXT".equals(outputFormat)) {
+            printPlainTextReport();
+        } else {
+            String json = generateJsonReport();
+            System.out.println(json);
 
-        // 1. Вывод в консоль
-        System.out.println(json);
+            Path outputPath = Paths.get(outputFile);
+            Path parentDir = outputPath.getParent();
+            if (parentDir != null) {
+                Files.createDirectories(parentDir); // ← Безопасно: только если есть родитель
+            }
+            Files.writeString(outputPath, json, StandardCharsets.UTF_8);
 
-        // 2. Запись в файл
-        Path outputPath = Paths.get("git-report.json");
-        Files.writeString(outputPath, json, StandardCharsets.UTF_8);
-
-        System.out.println(json);
+            System.out.println("\nJSON-отчёт сохранён в: " + outputPath.toAbsolutePath());
+        }
     }
 }
