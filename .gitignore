@@ -7,9 +7,6 @@ out/
 # Gradle
 build/
 .gradle/
-gradlew
-gradlew.bat
-gradle/
 
 # Локальные файлы
 *.log
