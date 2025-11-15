@@ -6,7 +6,9 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -126,12 +128,24 @@ public class GitLogAnalyzer {
 
     /**
      * Запускает анализ и выводит результат.
+     * <p>
+     * Результат:
+     * <ul>
+     *   <li>Выводится в консоль (stdout)</li>
+     *   <li>Сохраняется в файл {@code git-report.json} в корне проекта</li>
+     * </ul>
+     * </p>
      */
     public void run() throws Exception {
-        String result = generateJsonReport();
-        if ("PLAINTEXT".equals(outputFormat)) {
-        } else {
-            System.out.println(result);
-        }
+        String json = generateJsonReport();
+
+        // 1. Вывод в консоль
+        System.out.println(json);
+
+        // 2. Запись в файл
+        Path outputPath = Paths.get("git-report.json");
+        Files.writeString(outputPath, json, StandardCharsets.UTF_8);
+
+        System.out.println(json);
     }
 }
