@@ -1,9 +1,12 @@
 {
   "top_authors" : [ {
     "name" : "Kirill",
-    "commits" : 9
+    "commits" : 11
   } ],
   "found_keywords" : [ {
+    "hash" : "c538cad",
+    "message" : "HOTFIX: изменение CHANGELOG"
+  }, {
     "hash" : "f58f0ed",
     "message" : "Hotfix"
   }, {
