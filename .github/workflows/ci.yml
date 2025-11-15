@@ -25,16 +25,21 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Make gradlew executable (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: chmod +x gradlew
+
       - name: Create app.properties
         run: |
           echo "git.search.keywords=Initialization,Fill,Hotfix" > app.properties
           echo "output.format=JSON" >> app.properties
+          echo "output.file=git-report.json" >> app.properties
 
       - name: Build with Gradle
-        run: gradlew build
+        run: ./gradlew build --no-daemon
 
       - name: Run tests
-        run: gradlew test
+        run: ./gradlew test --no-daemon
 
       - name: Upload JAR artifact
         uses: actions/upload-artifact@v4
