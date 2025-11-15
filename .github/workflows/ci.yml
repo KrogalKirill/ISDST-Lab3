@@ -31,10 +31,10 @@ jobs:
           echo "output.format=JSON" >> app.properties
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: gradlew build
 
       - name: Run tests
-        run: ./gradlew test
+        run: gradlew test
 
       - name: Upload JAR artifact
         uses: actions/upload-artifact@v4
