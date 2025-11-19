@@ -68,7 +68,7 @@ output.format=JSON
 
 Перед запуском приложения необходимо создать и заполнить файл app.properties, для этого необходимл ввести
 
-- echo git.search.keywords=Initialization,Fill,HOTFIX> app.properties && echo output.format=JSON> > app.properties
+- echo git.search.keywords=Initialization,Fill,HOTFIX > app.properties && echo output.format=JSON > app.properties
 
 Теперь необходимо выполнить команду 
 
