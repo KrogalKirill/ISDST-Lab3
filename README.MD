@@ -66,6 +66,10 @@ output.format=JSON
 
 - git clone https://github.com/KrogalKirill/ISDST-Lab3.git
 
+И перейти в репозиторий проекта
+
+- cd ISDST-Lab3
+
 Перед запуском приложения необходимо создать и заполнить файл app.properties, для этого необходимл ввести
 
 - echo git.search.keywords=Initialization,Fill,HOTFIX > app.properties && echo output.format=JSON >> app.properties
