@@ -1,6 +1,7 @@
 ## Лабораторная работа № 3 по курсу ИППРПО
 - Студент группы ИТП-31 Крогаль Кирилл Дмитриевич
 - Вариант № 6 Анализатор логов Git
+- Статус прохождения тестов: [![CI](https://github.com/KrogalKirill/ISDST-Lab3/actions/workflows/ci.yml/badge.svg)](https://github.com/KrogalKirill/ISDST-Lab3/actions/workflows/ci.yml)
 
 Описание: Приложение запускает git log в текущем репозитории и анализирует вывод, чтобы построить статистику по коммитам.
 
