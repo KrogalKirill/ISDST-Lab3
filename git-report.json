@@ -1,9 +1,24 @@
 {
   "top_authors" : [ {
     "name" : "Kirill",
-    "commits" : 11
+    "commits" : 19
   } ],
   "found_keywords" : [ {
+    "hash" : "b33519c",
+    "message" : "Hotfix: gitignore"
+  }, {
+    "hash" : "cb34ece",
+    "message" : "Hotfix: ci.yml"
+  }, {
+    "hash" : "fddf016",
+    "message" : "Initialization: ci.yml"
+  }, {
+    "hash" : "f832be4",
+    "message" : "HOTFIX: тесты"
+  }, {
+    "hash" : "4189642",
+    "message" : "Hotfix: pull"
+  }, {
     "hash" : "c538cad",
     "message" : "HOTFIX: изменение CHANGELOG"
   }, {
