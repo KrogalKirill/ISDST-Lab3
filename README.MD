@@ -92,7 +92,7 @@ echo git.search.keywords=Initialization,Fill,HOTFIX > app.properties && echo out
 gradlew build
 ```
 
-Проект готов к запуску, сделать это можно командой
+После загрузки необходимых файлов, проект готов к запуску, сделать это можно командой
 
 ```bash
 gradlew run
