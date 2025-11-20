@@ -89,7 +89,7 @@ echo git.search.keywords=Initialization,Fill,HOTFIX > app.properties && echo out
 Теперь необходимо выполнить команду 
 
 ```bash
-- gradlew build
+gradlew build
 ```
 
 Проект готов к запуску, сделать это можно командой
