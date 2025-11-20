@@ -52,32 +52,48 @@ output.format=JSON
 
 И в открывшемся окне написать 
 
-- cmd
+```bash
+cmd
+```
 
 Далее необходимо создать директорию для хранения проекта, для этого в открывшейся командной строке необходимо написать
 
-- mkdir lab3
+```bash
+mkdir lab3
+```
 
 И перейти в неё, написав
 
-- cd lab3
+```bash
+cd lab3
+```
 
 Далее нужно скачать проект с удаленного репозитория, для этого в командную строку нужно ввести
 
-- git clone https://github.com/KrogalKirill/ISDST-Lab3.git
+```bash
+git clone https://github.com/KrogalKirill/ISDST-Lab3.git
+```
 
 И перейти в репозиторий проекта
 
-- cd ISDST-Lab3
+```bash
+cd ISDST-Lab3
+```
 
 Перед запуском приложения необходимо создать и заполнить файл app.properties, для этого необходимл ввести
 
-- echo git.search.keywords=Initialization,Fill,HOTFIX > app.properties && echo output.format=JSON >> app.properties
+```bash
+echo git.search.keywords=Initialization,Fill,HOTFIX > app.properties && echo output.format=JSON >> app.properties
+```
 
 Теперь необходимо выполнить команду 
 
+```bash
 - gradlew build
+```
 
 Проект готов к запуску, сделать это можно командой
 
-- gradlew run
+```bash
+gradlew run
+```
